@@ -23,6 +23,9 @@ export class User {
   password: string;
 
   @Prop()
+  dob: Date;
+
+  @Prop()
   age: number;
 
   @Prop({ type: String, enum: UserType, required: true })

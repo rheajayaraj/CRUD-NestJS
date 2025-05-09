@@ -11,6 +11,7 @@ import {
 import { UserService } from '../service/user.service';
 import { User } from '../schema/user.schema';
 import { UserGuard } from '../service/user.guard';
+import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
 
 @Controller('doctor')
 @UseGuards(UserGuard)
