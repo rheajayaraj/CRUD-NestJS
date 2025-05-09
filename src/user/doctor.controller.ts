@@ -6,12 +6,15 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.schema';
+import { UserGuard } from './user.guard';
 
-@Controller('users')
-export class UserController {
+@Controller('doctor')
+@UseGuards(UserGuard)
+export class DoctorController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
