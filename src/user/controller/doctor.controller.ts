@@ -8,9 +8,9 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { User } from './user.schema';
-import { UserGuard } from './user.guard';
+import { UserService } from '../service/user.service';
+import { User } from '../schema/user.schema';
+import { UserGuard } from '../service/user.guard';
 
 @Controller('doctor')
 @UseGuards(UserGuard)
@@ -26,6 +26,12 @@ export class DoctorController {
   findAll() {
     return this.userService.findAll();
   }
+  //@ismail()
+  //@isoptional()
+  //isnotempty()
+  //email:string
+
+  //forbidden  #/,{}
 
   @Get(':id')
   findOne(@Param('id') id: string) {

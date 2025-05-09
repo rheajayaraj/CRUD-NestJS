@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { DoctorController } from './doctor.controller';
-import { PatientController } from './patient.controller';
-import { UserService } from './user.service';
+import { DoctorController } from '../controller/doctor.controller';
+import { PatientController } from '../controller/patient.controller';
+import { UserService } from '../service/user.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './user.schema';
+import { User, UserSchema } from '../schema/user.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 

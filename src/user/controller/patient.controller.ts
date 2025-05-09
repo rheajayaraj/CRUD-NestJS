@@ -5,8 +5,8 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { PatientGuard } from './patient.guard';
+import { UserService } from '../service/user.service';
+import { PatientGuard } from '../service/patient.guard';
 
 @Controller('patient')
 @UseGuards(PatientGuard)
