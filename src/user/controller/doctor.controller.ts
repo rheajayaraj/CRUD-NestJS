@@ -19,7 +19,7 @@ export class DoctorController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() user: User) {
+  create(@Body() user: CreateUserDto) {
     return this.userService.create(user);
   }
 
@@ -27,12 +27,6 @@ export class DoctorController {
   findAll() {
     return this.userService.findAll();
   }
-  //@ismail()
-  //@isoptional()
-  //isnotempty()
-  //email:string
-
-  //forbidden  #/,{}
 
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -40,7 +34,7 @@ export class DoctorController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() user: Partial<User>) {
+  update(@Param('id') id: string, @Body() user: UpdateUserDto) {
     return this.userService.update(id, user);
   }
 
