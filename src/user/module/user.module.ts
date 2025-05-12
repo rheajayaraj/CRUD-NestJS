@@ -18,6 +18,6 @@ import { ConfigModule } from '@nestjs/config';
       signOptions: { expiresIn: '24h' },
     }),
   ],
-  exports: [UserService, MongooseModule],
+  exports: [UserService, MongooseModule, JwtModule],
 })
 export class UserModule {}
