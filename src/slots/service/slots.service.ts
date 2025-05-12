@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, Types } from 'mongoose';
 import { Slot, SlotDocument } from '../schema/slots.schema';
@@ -17,9 +17,16 @@ export class SlotsService {
 
     const start = new Date(dto.from);
     const end = new Date(dto.to);
+    const now = new Date();
 
-    if (isNaN(start.getTime()) || isNaN(end.getTime()) || start >= end) {
-      throw new Error('Invalid time range');
+    if (start <= now) {
+      throw new BadRequestException('Start time (from) must be in the future');
+    }
+
+    if (end <= start) {
+      throw new BadRequestException(
+        'End time (to) must be after start time (from)',
+      );
     }
 
     const slots: Slot[] = [];
@@ -29,12 +36,21 @@ export class SlotsService {
       const next = new Date(current.getTime() + 15 * 60 * 1000);
       if (next > end) break;
 
-      slots.push({
-        from: new Date(current),
-        to: new Date(next),
-        doctorId: doctorId,
+      const exists = await this.slotModel.exists({
+        doctorId,
+        from: current,
+        to: next,
         type: 'available',
       });
+
+      if (!exists) {
+        slots.push({
+          from: new Date(current),
+          to: new Date(next),
+          doctorId,
+          type: 'available',
+        });
+      }
 
       current = next;
     }
