@@ -29,7 +29,7 @@ export class User {
   age?: number;
 
   @Prop({ type: String, enum: UserType, required: true })
-  type?: UserType;
+  type: UserType;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

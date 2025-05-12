@@ -7,6 +7,7 @@ import {
   Put,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { UserGuard } from '../service/user.guard';
@@ -31,8 +32,8 @@ export class DoctorController {
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query('name') name?: string, @Query('age') age?: number) {
+    return this.userService.findAll(name, age);
   }
 
   @Get(':id')

@@ -32,9 +32,12 @@ export class UserService {
     return userObj;
   }
 
-  async findAll(): Promise<User[]> {
-    const users = await this.userModel.find().select('-password').exec();
-    if (!users) {
+  async findAll(name, age): Promise<User[]> {
+    const filter: any = {};
+    if (name) filter.name = name;
+    if (age) filter.age = age;
+    const users = await this.userModel.find(filter).select('-password').exec();
+    if (!users || users.length === 0) {
       throw new NotFoundException(`Users not found`);
     }
     return users;
@@ -49,6 +52,17 @@ export class UserService {
   }
 
   async update(id: string, user: Partial<User>): Promise<User | null> {
+    let age: number | undefined = undefined;
+    if (user.dob) {
+      const today = new Date();
+      const birthDate = new Date(user.dob);
+      age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+    }
+    user.age = age ?? user.age;
     const updatedUser = await this.userModel
       .findByIdAndUpdate(id, user, { new: true })
       .select('-password')
