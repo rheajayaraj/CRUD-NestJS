@@ -11,7 +11,21 @@ export class UserService {
   async create(user: User): Promise<User> {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(user.password, saltRounds);
-    const newUser = new this.userModel({ ...user, password: hashedPassword });
+    let age: number | undefined = undefined;
+    if (user.dob) {
+      const today = new Date();
+      const birthDate = new Date(user.dob);
+      age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+    }
+    const newUser = new this.userModel({
+      ...user,
+      password: hashedPassword,
+      age: age ?? user.age,
+    });
     await newUser.save();
     const userObj = newUser.toObject();
     delete userObj.password;

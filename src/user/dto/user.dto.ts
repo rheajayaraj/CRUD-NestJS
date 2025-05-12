@@ -25,7 +25,6 @@ export class CreateUserDto {
   password?: string;
 
   @IsDateString()
-  @IsOptional()
   dob?: Date;
 
   @IsNumber()
