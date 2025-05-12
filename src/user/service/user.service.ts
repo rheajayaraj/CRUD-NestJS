@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../schema/user.schema';
@@ -12,22 +12,47 @@ export class UserService {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(user.password, saltRounds);
     const newUser = new this.userModel({ ...user, password: hashedPassword });
-    return newUser.save();
+    await newUser.save();
+    const userObj = newUser.toObject();
+    delete userObj.password;
+    return userObj;
   }
 
   findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    const users = this.userModel.find().select('-password').exec();
+    if (!users) {
+      throw new NotFoundException(`Users not found`);
+    }
+    return users;
   }
 
   findOne(id: string): Promise<User | null> {
-    return this.userModel.findById(id).exec();
+    const user = this.userModel.findById(id).select('-password').exec();
+    if (!user) {
+      throw new NotFoundException(`User not found`);
+    }
+    return user;
   }
 
   update(id: string, user: Partial<User>): Promise<User | null> {
-    return this.userModel.findByIdAndUpdate(id, user, { new: true }).exec();
+    const updatedUser = this.userModel
+      .findByIdAndUpdate(id, user, { new: true })
+      .select('-password')
+      .exec();
+    if (!updatedUser) {
+      throw new NotFoundException(`User not found`);
+    }
+    return updatedUser;
   }
 
-  delete(id: string): Promise<User | null> {
-    return this.userModel.findByIdAndDelete(id).exec();
+  async delete(id: string): Promise<User | null> {
+    const deletedUser = await this.userModel
+      .findByIdAndDelete(id)
+      .select('-password')
+      .exec();
+    if (!deletedUser) {
+      throw new NotFoundException(`User not found`);
+    }
+    return deletedUser;
   }
 }
