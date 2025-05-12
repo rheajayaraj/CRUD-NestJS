@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { Appointment, AppointmentSchema } from '../schema/appointmets.schema';
+import { SlotModule } from 'src/slots/module/slots.module';
 
 @Module({
   controllers: [AppointmentsController],
@@ -19,6 +20,7 @@ import { Appointment, AppointmentSchema } from '../schema/appointmets.schema';
       secret: process.env.JWT_SECRET_KEY!,
       signOptions: { expiresIn: '24h' },
     }),
+    SlotModule,
   ],
   exports: [AppointmentsService, MongooseModule],
 })
