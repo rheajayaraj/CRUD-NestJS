@@ -18,24 +18,24 @@ export class UserService {
     return userObj;
   }
 
-  findAll(): Promise<User[]> {
-    const users = this.userModel.find().select('-password').exec();
+  async findAll(): Promise<User[]> {
+    const users = await this.userModel.find().select('-password').exec();
     if (!users) {
       throw new NotFoundException(`Users not found`);
     }
     return users;
   }
 
-  findOne(id: string): Promise<User | null> {
-    const user = this.userModel.findById(id).select('-password').exec();
+  async findOne(id: string): Promise<User | null> {
+    const user = await this.userModel.findById(id).select('-password').exec();
     if (!user) {
       throw new NotFoundException(`User not found`);
     }
     return user;
   }
 
-  update(id: string, user: Partial<User>): Promise<User | null> {
-    const updatedUser = this.userModel
+  async update(id: string, user: Partial<User>): Promise<User | null> {
+    const updatedUser = await this.userModel
       .findByIdAndUpdate(id, user, { new: true })
       .select('-password')
       .exec();
