@@ -37,7 +37,11 @@ export class DoctorController {
     const headerDto = plainToInstance(HeaderDto, { tenantId });
     const errors = await validate(headerDto);
     if (errors.length > 0) {
-      throw new BadRequestException('Invalid tenantId format');
+      const errorMessages = errors
+        .map((err) => Object.values(err.constraints || {}).join(', '))
+        .join('; ');
+
+      throw new BadRequestException(errorMessages);
     }
     user.type = UserType.DOCTOR;
     return this.userService.create(user, tenantId);
@@ -51,7 +55,11 @@ export class DoctorController {
     const headerDto = plainToInstance(HeaderDto, { tenantId });
     const errors = await validate(headerDto);
     if (errors.length > 0) {
-      throw new BadRequestException('Invalid tenantId format');
+      const errorMessages = errors
+        .map((err) => Object.values(err.constraints || {}).join(', '))
+        .join('; ');
+
+      throw new BadRequestException(errorMessages);
     }
     user.type = UserType.PATIENT;
     return this.userService.create(user, tenantId);
@@ -65,7 +73,11 @@ export class DoctorController {
     const headerDto = plainToInstance(HeaderDto, { tenantId });
     const errors = await validate(headerDto);
     if (errors.length > 0) {
-      throw new BadRequestException('Invalid tenantId format');
+      const errorMessages = errors
+        .map((err) => Object.values(err.constraints || {}).join(', '))
+        .join('; ');
+
+      throw new BadRequestException(errorMessages);
     }
     return this.userService.findAll(query, tenantId);
   }

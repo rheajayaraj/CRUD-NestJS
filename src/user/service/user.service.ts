@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from '../schema/user.schema';
 import * as bcrypt from 'bcrypt';
-import { HeaderDto, UserQueryDto } from '../dto/user.dto';
+import { UserQueryDto } from '../dto/user.dto';
 
 @Injectable()
 export class UserService {
