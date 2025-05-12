@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../schema/user.schema';
 import * as bcrypt from 'bcrypt';
+import { UserQueryDto } from '../dto/user.dto';
 
 @Injectable()
 export class UserService {
@@ -32,10 +33,10 @@ export class UserService {
     return userObj;
   }
 
-  async findAll(name, age): Promise<User[]> {
+  async findAll(query: UserQueryDto): Promise<User[]> {
     const filter: any = {};
-    if (name) filter.name = name;
-    if (age) filter.age = age;
+    if (query.name) filter.name = query.name;
+    if (query.age !== undefined) filter.age = query.age;
     const users = await this.userModel.find(filter).select('-password').exec();
     if (!users || users.length === 0) {
       throw new NotFoundException(`Users not found`);

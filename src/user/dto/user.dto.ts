@@ -10,6 +10,7 @@ import {
   IsStrongPassword,
 } from 'class-validator';
 import { UserType } from '../schema/user.schema';
+import { Type } from 'class-transformer';
 
 export class CreateUserDto {
   @IsString()
@@ -64,4 +65,16 @@ export class UpdateUserDto {
   @IsEnum(UserType)
   @IsOptional()
   type?: UserType;
+}
+
+export class UserQueryDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(18)
+  age?: number;
 }

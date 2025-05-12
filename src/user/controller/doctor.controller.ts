@@ -13,6 +13,7 @@ import { UserService } from '../service/user.service';
 import { UserGuard } from '../service/user.guard';
 import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
 import { UserType } from '../schema/user.schema';
+import { UserQueryDto } from '../dto/user.dto';
 
 @Controller('doctor')
 @UseGuards(UserGuard)
@@ -32,8 +33,8 @@ export class DoctorController {
   }
 
   @Get()
-  findAll(@Query('name') name?: string, @Query('age') age?: number) {
-    return this.userService.findAll(name, age);
+  findAll(@Query() query: UserQueryDto) {
+    return this.userService.findAll(query);
   }
 
   @Get(':id')
