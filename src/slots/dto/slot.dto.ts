@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsDateString, Length, IsMongoId } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsDateString,
+  Length,
+  IsMongoId,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateSlotDto {
   @IsNotEmpty()
@@ -15,4 +21,11 @@ export class DoctorDto {
   @IsMongoId()
   @IsNotEmpty()
   tenantId?: string;
+}
+
+export class SlotsQueryDto {
+  @IsOptional()
+  @Length(24, 24)
+  @IsMongoId()
+  doctorId?: string;
 }

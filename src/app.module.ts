@@ -8,6 +8,9 @@ import { AuthModule } from './auth/module/auth.module';
 import { SlotsService } from './slots/service/slots.service';
 import { SlotController } from './slots/controller/slots.controller';
 import { SlotModule } from './slots/module/slots.module';
+import { AppointmentsService } from './appointments/service/appointments.service';
+import { AppointmentsController } from './appointments/controller/appointments.controller';
+import { AppointmentsModule } from './appointments/module/appointments.module';
 
 @Module({
   imports: [
@@ -16,8 +19,9 @@ import { SlotModule } from './slots/module/slots.module';
     UserModule,
     AuthModule,
     SlotModule,
+    AppointmentsModule,
   ],
-  controllers: [AppController, SlotController],
-  providers: [AppService, SlotsService],
+  controllers: [AppController, SlotController, AppointmentsController],
+  providers: [AppService, SlotsService, AppointmentsService],
 })
 export class AppModule {}

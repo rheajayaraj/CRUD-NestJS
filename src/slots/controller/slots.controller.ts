@@ -6,12 +6,14 @@ import {
   UseGuards,
   BadRequestException,
   Get,
+  Query,
 } from '@nestjs/common';
-import { CreateSlotDto } from '../dto/slot.dto';
+import { CreateSlotDto, SlotsQueryDto } from '../dto/slot.dto';
 import { SlotsService } from '../service/slots.service';
 import { Request } from 'express';
 import { UserGuard } from 'src/user/service/user.guard';
 import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
+import { PatientGuard } from 'src/user/service/patient.guard';
 
 @Controller('slot')
 export class SlotController {
@@ -31,5 +33,16 @@ export class SlotController {
     const user = req.user as JwtPayload;
     if (!user?.userId) throw new BadRequestException('Unauthorized access');
     return this.slotService.findAll(user.userId);
+  }
+
+  @Get('appointment')
+  @UseGuards(PatientGuard)
+  async findAllSlotsPatient(
+    @Query() query: SlotsQueryDto,
+    @Req() req: Request,
+  ) {
+    const user = req.user as JwtPayload;
+    if (!user?.userId) throw new BadRequestException('Unauthorized access');
+    return this.slotService.findAll(query.doctorId);
   }
 }

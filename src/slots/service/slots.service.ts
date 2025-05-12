@@ -63,7 +63,11 @@ export class SlotsService {
   }
 
   async findAll(doctorId): Promise<Slot[]> {
-    const slots = await this.slotModel.find({ doctorId }).exec();
+    const filter = { type: 'available' };
+    if (doctorId) {
+      filter['doctorId'] = doctorId;
+    }
+    const slots = await this.slotModel.find(filter).exec();
     if (!slots || slots.length === 0) {
       throw new NotFoundException(`Slots not found`);
     }
