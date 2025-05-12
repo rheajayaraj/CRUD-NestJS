@@ -30,6 +30,13 @@ export class User {
 
   @Prop({ type: String, enum: UserType, required: true })
   type: UserType;
+
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'Hospitals',
+    required: true,
+  })
+  tenantId?: MongooseSchema.Types.ObjectId;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

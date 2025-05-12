@@ -8,6 +8,8 @@ import {
   IsNumber,
   Min,
   IsStrongPassword,
+  IsMongoId,
+  Length,
 } from 'class-validator';
 import { UserType } from '../schema/user.schema';
 import { Type } from 'class-transformer';
@@ -77,4 +79,11 @@ export class UserQueryDto {
   @IsNumber()
   @Min(18)
   age?: number;
+}
+
+export class HeaderDto {
+  @Length(24, 24)
+  @IsMongoId()
+  @IsNotEmpty()
+  tenantId?: string;
 }

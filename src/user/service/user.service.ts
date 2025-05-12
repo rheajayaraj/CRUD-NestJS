@@ -1,15 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User, UserDocument } from '../schema/user.schema';
 import * as bcrypt from 'bcrypt';
-import { UserQueryDto } from '../dto/user.dto';
+import { HeaderDto, UserQueryDto } from '../dto/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async create(user: User): Promise<User> {
+  async create(user: User, tenantId): Promise<User> {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(user.password, saltRounds);
     let age: number | undefined = undefined;
@@ -26,6 +26,7 @@ export class UserService {
       ...user,
       password: hashedPassword,
       age: age ?? user.age,
+      tenantId: new Types.ObjectId(tenantId),
     });
     await newUser.save();
     const userObj = newUser.toObject();
@@ -33,10 +34,11 @@ export class UserService {
     return userObj;
   }
 
-  async findAll(query: UserQueryDto): Promise<User[]> {
+  async findAll(query: UserQueryDto, tenantId): Promise<User[]> {
     const filter: any = {};
     if (query.name) filter.name = query.name;
     if (query.age !== undefined) filter.age = query.age;
+    filter.tenantId = tenantId;
     const users = await this.userModel.find(filter).select('-password').exec();
     if (!users || users.length === 0) {
       throw new NotFoundException(`Users not found`);

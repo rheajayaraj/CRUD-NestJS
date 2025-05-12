@@ -8,33 +8,66 @@ import {
   Delete,
   UseGuards,
   Query,
+  Headers,
+  BadRequestException,
 } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { UserGuard } from '../service/user.guard';
-import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  UserQueryDto,
+  HeaderDto,
+} from '../dto/user.dto';
 import { UserType } from '../schema/user.schema';
-import { UserQueryDto } from '../dto/user.dto';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 
 @Controller('doctor')
 @UseGuards(UserGuard)
 export class DoctorController {
+  mongoose: any;
   constructor(private readonly userService: UserService) {}
 
   @Post('create-doctor')
-  createDoctor(@Body() user: CreateUserDto) {
+  async createDoctor(
+    @Body() user: CreateUserDto,
+    @Headers('tenant-id') tenantId: string,
+  ) {
+    const headerDto = plainToInstance(HeaderDto, { tenantId });
+    const errors = await validate(headerDto);
+    if (errors.length > 0) {
+      throw new BadRequestException('Invalid tenantId format');
+    }
     user.type = UserType.DOCTOR;
-    return this.userService.create(user);
+    return this.userService.create(user, tenantId);
   }
 
   @Post('create-patient')
-  createPatient(@Body() user: CreateUserDto) {
+  async createPatient(
+    @Body() user: CreateUserDto,
+    @Headers('tenant-id') tenantId: string,
+  ) {
+    const headerDto = plainToInstance(HeaderDto, { tenantId });
+    const errors = await validate(headerDto);
+    if (errors.length > 0) {
+      throw new BadRequestException('Invalid tenantId format');
+    }
     user.type = UserType.PATIENT;
-    return this.userService.create(user);
+    return this.userService.create(user, tenantId);
   }
 
   @Get()
-  findAll(@Query() query: UserQueryDto) {
-    return this.userService.findAll(query);
+  async findAll(
+    @Query() query: UserQueryDto,
+    @Headers('tenant-id') tenantId: string,
+  ) {
+    const headerDto = plainToInstance(HeaderDto, { tenantId });
+    const errors = await validate(headerDto);
+    if (errors.length > 0) {
+      throw new BadRequestException('Invalid tenantId format');
+    }
+    return this.userService.findAll(query, tenantId);
   }
 
   @Get(':id')
