@@ -5,6 +5,7 @@ import {
   Req,
   UseGuards,
   BadRequestException,
+  Get,
 } from '@nestjs/common';
 import { CreateSlotDto } from '../dto/slot.dto';
 import { SlotsService } from '../service/slots.service';
@@ -22,5 +23,13 @@ export class SlotController {
     const user = req.user as JwtPayload;
     if (!user?.userId) throw new BadRequestException('Unauthorized access');
     return this.slotService.createMultipleSlots(dto, user.userId);
+  }
+
+  @Get()
+  @UseGuards(UserGuard)
+  async findAllSlots(@Req() req: Request) {
+    const user = req.user as JwtPayload;
+    if (!user?.userId) throw new BadRequestException('Unauthorized access');
+    return this.slotService.findAll(user.userId);
   }
 }

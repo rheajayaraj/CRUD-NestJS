@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, Types } from 'mongoose';
 import { Slot, SlotDocument } from '../schema/slots.schema';
@@ -56,5 +60,13 @@ export class SlotsService {
     }
 
     return this.slotModel.insertMany(slots);
+  }
+
+  async findAll(doctorId): Promise<Slot[]> {
+    const slots = await this.slotModel.find({ doctorId }).exec();
+    if (!slots || slots.length === 0) {
+      throw new NotFoundException(`Slots not found`);
+    }
+    return slots;
   }
 }
