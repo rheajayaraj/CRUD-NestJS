@@ -63,7 +63,11 @@ export class SlotsService {
   }
 
   async findAll(doctorId): Promise<Slot[]> {
-    const filter = { type: 'available' };
+    const now = new Date();
+    const filter: any = {
+      type: 'available',
+      from: { $gt: now },
+    };
     if (doctorId) {
       filter['doctorId'] = doctorId;
     }
