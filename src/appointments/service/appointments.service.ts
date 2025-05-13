@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Appointment, AppointmentDocument } from '../schema/appointmets.schema';
 import { Model } from 'mongoose';
 import { CreateAppointmentDto } from '../dto/appointment.dto';
-import { Slot, SlotDocument } from '../../slots/schema/slots.schema';
+import { Slot } from '../../slots/schema/slots.schema';
 
 @Injectable()
 export class AppointmentsService {

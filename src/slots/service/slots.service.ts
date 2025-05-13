@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Slot, SlotDocument } from '../schema/slots.schema';
 import { CreateSlotDto } from '../dto/slot.dto';
 

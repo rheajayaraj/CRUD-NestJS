@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsDateString, Length, IsMongoId } from 'class-validator';
+import { IsNotEmpty, Length, IsMongoId } from 'class-validator';
 
 export class CreateAppointmentDto {
   @Length(24, 24)
