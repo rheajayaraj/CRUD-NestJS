@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Appointment, AppointmentDocument } from '../schema/appointmets.schema';
 import { Model } from 'mongoose';
@@ -24,6 +28,15 @@ export class AppointmentsService {
     });
     if (!slot) {
       throw new NotFoundException('Selected slot is not available');
+    }
+    if (slot.doctorId.toString() != appointment.doctorId) {
+      throw new ForbiddenException(
+        'Doctor ID in slot and selected Doctor ID are not the same',
+      );
+    }
+    const now = new Date();
+    if (!slot.from || slot.from < now) {
+      throw new ForbiddenException('Slot timings are in the past');
     }
     slot.type = 'booked';
     await slot.save();
