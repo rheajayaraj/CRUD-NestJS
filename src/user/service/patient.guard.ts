@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -28,6 +29,10 @@ export class PatientGuard implements CanActivate {
       request['user'] = decoded;
     } catch (err) {
       throw new UnauthorizedException('Invalid or expired token');
+    }
+    const user = request['user'] as { userId: string; type: string };
+    if (user.type === 'doctor') {
+      throw new ForbiddenException('Must be a patient to access');
     }
 
     return true;
