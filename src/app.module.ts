@@ -11,6 +11,7 @@ import { SlotModule } from './slots/module/slots.module';
 import { AppointmentsService } from './appointments/service/appointments.service';
 import { AppointmentsController } from './appointments/controller/appointments.controller';
 import { AppointmentsModule } from './appointments/module/appointments.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AppointmentsModule } from './appointments/module/appointments.module';
     AuthModule,
     SlotModule,
     AppointmentsModule,
+    MailModule,
   ],
   controllers: [AppController, SlotController, AppointmentsController],
   providers: [AppService, SlotsService, AppointmentsService],

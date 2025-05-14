@@ -4,12 +4,15 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from '../../user/schema/user.schema';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { PasswordReset } from '../dto/forgotpassword.dto';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async findOneByEmail(email: string): Promise<User | null> {
@@ -31,5 +34,20 @@ export class AuthService {
     const payload = { userId: user._id, type: user.type };
     const accessToken = this.jwtService.sign(payload);
     return { accessToken };
+  }
+
+  async forgotPassword(email: PasswordReset) {
+    const user = await this.findOneByEmail(email.email);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const otp = '12345';
+    await this.mailService.sendMail(
+      email.email,
+      'Password Reset OTP',
+      `Your OTP to reset password is: ${otp}`,
+    );
+
+    return { message: 'OTP sent to email' };
   }
 }
