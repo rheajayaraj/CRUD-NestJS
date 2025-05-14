@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from '../schema/user.schema';
@@ -9,7 +13,17 @@ import { UserQueryDto } from '../dto/user.dto';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
+  async findOneByEmail(email: string): Promise<User | null> {
+    return this.userModel
+      .findOne({ email: { $regex: new RegExp(`^${email}$`, 'i') } })
+      .exec();
+  }
+
   async create(user: User, tenantId): Promise<User> {
+    const oldUser = await this.findOneByEmail(user.email);
+    if (oldUser) {
+      throw new ForbiddenException('User already exists');
+    }
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(user.password, saltRounds);
     let age: number | undefined = undefined;
@@ -55,6 +69,12 @@ export class UserService {
   }
 
   async update(id: string, user: Partial<User>): Promise<User | null> {
+    if (user.email) {
+      const oldUser = await this.findOneByEmail(user.email);
+      if (oldUser?._id != user._id) {
+        throw new ForbiddenException('User with this email already exists');
+      }
+    }
     let age: number | undefined = undefined;
     if (user.dob) {
       const today = new Date();
