@@ -1,10 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../../user/schema/user.schema';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { PasswordReset } from '../dto/forgotpassword.dto';
+import { ForgotPassword, PasswordReset } from '../dto/auth.dto';
 import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
@@ -36,7 +40,7 @@ export class AuthService {
     return { accessToken };
   }
 
-  async forgotPassword(email: PasswordReset) {
+  async forgotPassword(email: ForgotPassword) {
     const user = await this.findOneByEmail(email.email);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -49,5 +53,21 @@ export class AuthService {
     );
 
     return { message: 'OTP sent to email' };
+  }
+
+  async resetPassword(resetDto: PasswordReset) {
+    const user = await this.findOneByEmail(resetDto.email);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const otp = '12345';
+    if (resetDto.otp != otp) {
+      throw new ForbiddenException('OTP is not valid');
+    }
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(resetDto.password, saltRounds);
+    user.password = hashedPassword;
+    await this.userModel.findByIdAndUpdate(user._id, user).exec();
+    return { message: 'Password has been reset successfully' };
   }
 }
