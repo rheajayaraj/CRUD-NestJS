@@ -49,7 +49,7 @@ export class AuthService {
     await this.mailService.sendMail(
       email.email,
       'Password Reset OTP',
-      `Your OTP to reset password is: ${otp}`,
+      `Your OTP to reset password is ${otp}`,
     );
 
     return { message: 'OTP sent to email' };

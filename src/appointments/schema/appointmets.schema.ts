@@ -16,6 +16,12 @@ export class Appointment {
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Slots', required: true })
   slotId: MongooseSchema.Types.ObjectId;
+
+  @Prop({ default: 'not paid' })
+  payment: string;
+
+  @Prop()
+  paymemtId: string;
 }
 
 export const AppointmentSchema = SchemaFactory.createForClass(Appointment);

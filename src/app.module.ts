@@ -12,6 +12,7 @@ import { AppointmentsService } from './appointments/service/appointments.service
 import { AppointmentsController } from './appointments/controller/appointments.controller';
 import { AppointmentsModule } from './appointments/module/appointments.module';
 import { MailModule } from './mail/mail.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MailModule } from './mail/mail.module';
     SlotModule,
     AppointmentsModule,
     MailModule,
+    PaymentModule,
   ],
   controllers: [AppController, SlotController, AppointmentsController],
   providers: [AppService, SlotsService, AppointmentsService],

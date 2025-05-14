@@ -7,10 +7,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { Appointment, AppointmentSchema } from '../schema/appointmets.schema';
 import { SlotModule } from 'src/slots/module/slots.module';
+import { PaymentService } from 'src/payment/payment.service';
 
 @Module({
   controllers: [AppointmentsController],
-  providers: [AppointmentsService, UserGuard],
+  providers: [AppointmentsService, UserGuard, PaymentService],
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forFeature([
