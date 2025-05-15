@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PaymentDto } from './payment.dto';
 const Razorpay = require('razorpay');
 
 @Injectable()
@@ -21,5 +22,22 @@ export class PaymentService {
     };
 
     return this.razorpay.orders.create(options);
+  }
+
+  async checkPaymentStatus(paymentDto: PaymentDto) {
+    try {
+      const payment = await this.razorpay.payments.fetch(paymentDto.paymentId);
+      return {
+        id: payment.id,
+        status: payment.status,
+        amount: payment.amount / 100,
+        currency: payment.currency,
+        method: payment.method,
+        email: payment.email,
+        contact: payment.contact,
+      };
+    } catch (error) {
+      throw new NotFoundException('Payment not found or authentication failed');
+    }
   }
 }
