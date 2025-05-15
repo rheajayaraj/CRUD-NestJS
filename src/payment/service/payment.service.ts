@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PaymentDto } from './payment.dto';
+import { PaymentDto } from '../dto/payment.dto';
 const Razorpay = require('razorpay');
 
 @Injectable()

@@ -8,7 +8,7 @@ import { Appointment, AppointmentDocument } from '../schema/appointmets.schema';
 import { Model } from 'mongoose';
 import { CreateAppointmentDto } from '../dto/appointment.dto';
 import { Slot } from '../../slots/schema/slots.schema';
-import { PaymentService } from 'src/payment/payment.service';
+import { PaymentService } from 'src/payment/service/payment.service';
 
 @Injectable()
 export class AppointmentsService {

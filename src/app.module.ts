@@ -11,8 +11,8 @@ import { SlotModule } from './slots/module/slots.module';
 import { AppointmentsService } from './appointments/service/appointments.service';
 import { AppointmentsController } from './appointments/controller/appointments.controller';
 import { AppointmentsModule } from './appointments/module/appointments.module';
-import { MailModule } from './mail/mail.module';
-import { PaymentModule } from './payment/payment.module';
+import { MailModule } from './mail/module/mail.module';
+import { PaymentModule } from './payment/module/payment.module';
 
 @Module({
   imports: [

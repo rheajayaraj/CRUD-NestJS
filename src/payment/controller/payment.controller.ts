@@ -5,8 +5,8 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
-import { PaymentService } from './payment.service';
-import { PaymentDto } from './payment.dto';
+import { PaymentService } from '../service/payment.service';
+import { PaymentDto } from '../dto/payment.dto';
 
 @Controller('payment')
 export class PaymentController {

@@ -9,7 +9,7 @@ import { User, UserDocument } from '../../user/schema/user.schema';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ForgotPassword, PasswordReset } from '../dto/auth.dto';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from 'src/mail/service/mail.service';
 
 @Injectable()
 export class AuthService {
