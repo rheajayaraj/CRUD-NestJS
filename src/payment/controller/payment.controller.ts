@@ -15,7 +15,6 @@ export class PaymentController {
   async verifyPayment(@Body() paymentDto: PaymentDto) {
     try {
       const payment = await this.paymentService.checkPaymentStatus(paymentDto);
-
       return {
         success: true,
         message: 'Payment verified successfully',

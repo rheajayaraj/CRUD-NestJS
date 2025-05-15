@@ -17,7 +17,7 @@ export class Appointment {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Slots', required: true })
   slotId: MongooseSchema.Types.ObjectId;
 
-  @Prop({ default: 'not paid' })
+  @Prop({ default: 'pending' })
   payment: string;
 
   @Prop()
