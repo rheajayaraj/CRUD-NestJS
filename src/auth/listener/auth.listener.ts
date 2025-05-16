@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MailService } from '../../mail/service/mail.service';
 import { LoginHistoryService } from 'src/login-history/service/login-history.service';
+import { LoginDto } from '../dto/auth.dto';
 
 @Injectable()
 export class LoginListener {
@@ -11,8 +12,8 @@ export class LoginListener {
   ) {}
 
   @OnEvent('user.login')
-  async handleUserLoginEvent(payload: { userId: string; email: string }) {
-    await this.loginHistoryService.recordLogin(payload.userId, payload.email);
+  async handleUserLoginEvent(payload: LoginDto) {
+    await this.loginHistoryService.recordLogin(payload.userId!, payload.email);
 
     await this.mailService.sendMail(
       payload.email,

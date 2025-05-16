@@ -10,7 +10,7 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from '../../user/schema/user.schema';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { ForgotPassword, PasswordReset } from '../dto/auth.dto';
+import { ForgotPassword, LoginDto, PasswordReset } from '../dto/auth.dto';
 import { MailService } from 'src/mail/service/mail.service';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
@@ -99,10 +99,16 @@ export class AuthService {
     const payload = { userId: user._id, type: user.type };
     const accessToken = this.jwtService.sign(payload);
 
-    this.eventEmitter.emit('user.login', {
-      userId: user._id,
+    if (!user._id) {
+      throw new Error('User document missing _id');
+    }
+
+    const loginDto: LoginDto = {
+      userId: user._id.toString(),
       email: user.email,
-    });
+    };
+
+    this.eventEmitter.emit('user.login', loginDto);
 
     return { accessToken };
   }

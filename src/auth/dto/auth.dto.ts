@@ -1,4 +1,10 @@
-import { IsEmail, IsString, IsStrongPassword } from 'class-validator';
+import {
+  IsEmail,
+  IsMongoId,
+  IsString,
+  IsStrongPassword,
+} from 'class-validator';
+import { Types } from 'mongoose';
 
 export class ForgotPassword {
   @IsEmail()
@@ -14,4 +20,12 @@ export class PasswordReset {
 
   @IsStrongPassword()
   password: string;
+}
+
+export class LoginDto {
+  @IsMongoId()
+  userId?: string;
+
+  @IsEmail()
+  email: string;
 }
