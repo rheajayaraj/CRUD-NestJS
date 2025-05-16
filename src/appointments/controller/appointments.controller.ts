@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Post,
   Req,
   UseGuards,
@@ -23,5 +24,13 @@ export class AppointmentsController {
     const user = req.user as JwtPayload;
     if (!user?.userId) throw new BadRequestException('Unauthorized access');
     return this.appointmentService.create(appointment, user.userId);
+  }
+
+  @Get('appointments')
+  @UseGuards(PatientGuard)
+  async find(@Req() req: Request) {
+    const user = req.user as JwtPayload;
+    if (!user?.userId) throw new BadRequestException('Unauthorized access');
+    return this.appointmentService.findAll(user.userId);
   }
 }

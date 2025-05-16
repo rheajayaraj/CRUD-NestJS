@@ -52,4 +52,17 @@ export class AppointmentsService {
     const savedAppointment = await newAppointment.save();
     return { appointment: savedAppointment, order };
   }
+
+  async findAll(patientId): Promise<Appointment[]> {
+    const appointmets = await this.appointmentModel
+      .find({ patientId })
+      .populate('doctorId', '-password')
+      .populate('patientId', '-password')
+      .populate('slotId')
+      .exec();
+    if (!appointmets || appointmets.length === 0) {
+      throw new NotFoundException(`Appointmets not found`);
+    }
+    return appointmets;
+  }
 }

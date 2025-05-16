@@ -8,13 +8,13 @@ export class Appointment {
   @Prop({ type: MongooseSchema.Types.ObjectId, auto: true })
   _id?: MongooseSchema.Types.ObjectId;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Users', required: true })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
   doctorId: MongooseSchema.Types.ObjectId;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Users', required: true })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
   patientId?: MongooseSchema.Types.ObjectId;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Slots', required: true })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Slot', required: true })
   slotId: MongooseSchema.Types.ObjectId;
 
   @Prop({ default: 'pending' })
