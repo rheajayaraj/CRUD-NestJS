@@ -14,6 +14,7 @@ import { AppointmentsModule } from './appointments/module/appointments.module';
 import { MailModule } from './mail/module/mail.module';
 import { PaymentModule } from './payment/module/payment.module';
 import { RedisModule } from './redis/redis.module';
+import { LoginHistoryModule } from './login-history/module/login-history.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { RedisModule } from './redis/redis.module';
     MailModule,
     PaymentModule,
     RedisModule,
+    LoginHistoryModule,
   ],
   controllers: [AppController, SlotController, AppointmentsController],
   providers: [AppService, SlotsService, AppointmentsService],

@@ -6,6 +6,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { MailModule } from 'src/mail/module/mail.module';
 import { RedisModule } from 'src/redis/redis.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { LoginHistoryModule } from 'src/login-history/module/login-history.module';
+import { LoginListener } from '../listener/auth.listener';
 
 @Module({
   imports: [
@@ -17,8 +20,10 @@ import { RedisModule } from 'src/redis/redis.module';
     UserModule,
     MailModule,
     RedisModule,
+    EventEmitterModule.forRoot(),
+    LoginHistoryModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, LoginListener],
 })
 export class AuthModule {}

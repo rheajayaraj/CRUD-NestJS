@@ -15,6 +15,7 @@ import { MailService } from 'src/mail/service/mail.service';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import * as crypto from 'crypto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +29,7 @@ export class AuthService {
     private jwtService: JwtService,
     private readonly mailService: MailService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async findOneByEmail(email: string): Promise<User | null> {
@@ -96,6 +98,12 @@ export class AuthService {
 
     const payload = { userId: user._id, type: user.type };
     const accessToken = this.jwtService.sign(payload);
+
+    this.eventEmitter.emit('user.login', {
+      userId: user._id,
+      email: user.email,
+    });
+
     return { accessToken };
   }
 
