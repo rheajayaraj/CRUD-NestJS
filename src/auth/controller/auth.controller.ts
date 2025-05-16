@@ -20,4 +20,9 @@ export class AuthController {
   async resetPassword(@Body() resetDto: PasswordReset) {
     return this.authService.resetPassword(resetDto);
   }
+
+  @Post('unlock-account')
+  async unlockAccount(@Body() body: { email: string }) {
+    return this.authService.unlockAccount(body.email);
+  }
 }
