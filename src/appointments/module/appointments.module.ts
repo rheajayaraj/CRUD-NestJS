@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppointmentsController } from '../controller/appointments.controller';
 import { AppointmentsService } from '../service/appointments.service';
-import { UserGuard } from 'src/user/service/user.guard';
+import { UserGuard } from 'src/common/utils/user.guard';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';

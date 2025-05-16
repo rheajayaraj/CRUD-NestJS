@@ -9,6 +9,7 @@ import { RedisModule } from 'src/redis/redis.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LoginHistoryModule } from 'src/login-history/module/login-history.module';
 import { LoginListener } from '../listener/auth.listener';
+import { UtilsModule } from 'src/common/utils/utils.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { LoginListener } from '../listener/auth.listener';
     RedisModule,
     EventEmitterModule.forRoot(),
     LoginHistoryModule,
+    UtilsModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LoginListener],

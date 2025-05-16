@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Req } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { ForgotPassword, PasswordReset } from '../dto/auth.dto';
 
@@ -7,8 +7,11 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  async login(@Body() loginDto: { email: string; password: string }) {
-    return this.authService.login(loginDto.email, loginDto.password);
+  async login(
+    @Body() loginDto: { email: string; password: string },
+    @Req() request,
+  ) {
+    return this.authService.login(loginDto.email, loginDto.password, request);
   }
 
   @Post('forgot-password')

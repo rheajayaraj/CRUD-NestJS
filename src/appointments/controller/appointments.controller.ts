@@ -10,7 +10,7 @@ import {
 import { AppointmentsService } from '../service/appointments.service';
 import { CreateAppointmentDto } from '../dto/appointment.dto';
 import { Request } from 'express';
-import { PatientGuard } from 'src/user/service/patient.guard';
+import { PatientGuard } from 'src/common/utils/patient.guard';
 import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
 
 @Controller('appointment')

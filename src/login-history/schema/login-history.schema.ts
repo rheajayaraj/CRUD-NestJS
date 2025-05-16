@@ -11,6 +11,21 @@ export class LoginHistory extends Document {
 
   @Prop({ required: true })
   timestamp: Date;
+
+  @Prop({ required: true })
+  ipAddress: string;
+
+  @Prop({ required: true })
+  userAgent: string;
+
+  @Prop()
+  osType?: string;
+
+  @Prop()
+  browser?: string;
+
+  @Prop()
+  deviceType?: string;
 }
 
 export const LoginHistorySchema = SchemaFactory.createForClass(LoginHistory);

@@ -6,7 +6,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from '../service/user.service';
-import { PatientGuard } from '../service/patient.guard';
+import { PatientGuard } from '../../common/utils/patient.guard';
 
 @Controller('patient')
 @UseGuards(PatientGuard)

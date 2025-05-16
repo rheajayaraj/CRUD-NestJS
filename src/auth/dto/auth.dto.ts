@@ -28,4 +28,6 @@ export class LoginDto {
 
   @IsEmail()
   email: string;
+
+  request?: Request;
 }

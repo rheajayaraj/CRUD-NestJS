@@ -51,6 +51,7 @@ export class AuthService {
   async login(
     email: string,
     password: string,
+    request: Request,
   ): Promise<{ accessToken: string }> {
     const lockKey = `login_lock:${email}`;
     const isLocked = await this.cacheManager.get<boolean>(lockKey);
@@ -106,6 +107,7 @@ export class AuthService {
     const loginDto: LoginDto = {
       userId: user._id.toString(),
       email: user.email,
+      request,
     };
 
     this.eventEmitter.emit('user.login', loginDto);

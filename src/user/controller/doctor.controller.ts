@@ -12,7 +12,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { UserService } from '../service/user.service';
-import { UserGuard } from '../service/user.guard';
+import { UserGuard } from '../../common/utils/user.guard';
 import {
   CreateUserDto,
   UpdateUserDto,

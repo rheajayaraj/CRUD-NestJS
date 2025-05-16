@@ -11,9 +11,9 @@ import {
 import { CreateSlotDto, SlotsQueryDto } from '../dto/slot.dto';
 import { SlotsService } from '../service/slots.service';
 import { Request } from 'express';
-import { UserGuard } from 'src/user/service/user.guard';
+import { UserGuard } from 'src/common/utils/user.guard';
 import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
-import { PatientGuard } from 'src/user/service/patient.guard';
+import { PatientGuard } from 'src/common/utils/patient.guard';
 
 @Controller('slot')
 export class SlotController {

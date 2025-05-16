@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Slot, SlotSchema } from '../schema/slots.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
-import { UserGuard } from 'src/user/service/user.guard';
+import { UserGuard } from 'src/common/utils/user.guard';
 
 @Module({
   controllers: [SlotController],

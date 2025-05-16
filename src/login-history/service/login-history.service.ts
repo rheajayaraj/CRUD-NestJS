@@ -10,10 +10,17 @@ export class LoginHistoryService {
     private readonly loginHistoryModel: Model<LoginHistory>,
   ) {}
 
-  async recordLogin(userId: string, email: string): Promise<LoginHistory> {
+  async recordLogin(loginData: {
+    userId?: string;
+    email: string;
+    ipAddress: string;
+    userAgent: string;
+    osType?: string;
+    browser?: string;
+    deviceType?: string;
+  }): Promise<LoginHistory> {
     const loginRecord = new this.loginHistoryModel({
-      userId,
-      email,
+      ...loginData,
       timestamp: new Date(),
     });
     return loginRecord.save();

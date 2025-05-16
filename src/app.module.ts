@@ -15,6 +15,7 @@ import { MailModule } from './mail/module/mail.module';
 import { PaymentModule } from './payment/module/payment.module';
 import { RedisModule } from './redis/redis.module';
 import { LoginHistoryModule } from './login-history/module/login-history.module';
+import { UtilsModule } from './common/utils/utils.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { LoginHistoryModule } from './login-history/module/login-history.module'
     PaymentModule,
     RedisModule,
     LoginHistoryModule,
+    UtilsModule,
   ],
   controllers: [AppController, SlotController, AppointmentsController],
   providers: [AppService, SlotsService, AppointmentsService],
