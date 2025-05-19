@@ -34,12 +34,16 @@ export class LoginListener {
     await this.mailService.sendMail(
       payload.email,
       'New Login Alert',
-      `New login detected:
+      'welcome',
+      {
+        name: '',
+        text: `New login detected:
       - Time: ${new Date().toLocaleString()}
       - IP: ${ipAddress}
       - Device: ${device} (${os})
       - Browser: ${browser}
       - OS: ${os}`,
+      },
     );
   }
 

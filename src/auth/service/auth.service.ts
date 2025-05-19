@@ -139,7 +139,11 @@ export class AuthService {
     await this.mailService.sendMail(
       email.email,
       'Password Reset OTP',
-      `Your OTP to reset password is ${otp}. It will expire in 10 minutes.`,
+      'welcome',
+      {
+        name: user.name,
+        text: `Your OTP to reset password is ${otp}. It will expire in 10 minutes.`,
+      },
     );
 
     return { message: 'OTP sent to email' };
