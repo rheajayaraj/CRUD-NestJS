@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Headers,
 } from '@nestjs/common';
 import { PaymentService } from '../service/payment.service';
 import { PaymentDto } from '../dto/payment.dto';
@@ -23,5 +24,13 @@ export class PaymentController {
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @Post('webhook')
+  async handleRazorpayWebhook(
+    @Body() body: any,
+    @Headers('x-razorpay-signature') signature: string,
+  ) {
+    return this.paymentService.handleWebhook(body, signature);
   }
 }

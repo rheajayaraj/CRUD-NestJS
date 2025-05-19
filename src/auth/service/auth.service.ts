@@ -48,7 +48,7 @@ export class AuthService {
     return { message: 'Account has been unlocked successfully' };
   }
 
-  async event(loginDto: LoginDto) {
+  event(loginDto: LoginDto) {
     this.eventEmitter.emit('user.login', loginDto);
   }
 

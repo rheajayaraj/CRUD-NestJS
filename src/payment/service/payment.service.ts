@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PaymentDto } from '../dto/payment.dto';
 const Razorpay = require('razorpay');
 import {
@@ -7,6 +11,7 @@ import {
 } from 'src/appointments/schema/appointmets.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import crypto = require('crypto');
 
 @Injectable()
 export class PaymentService {
@@ -62,5 +67,69 @@ export class PaymentService {
     } catch (error) {
       throw new NotFoundException('Payment not found or authentication failed');
     }
+  }
+
+  async handleWebhook(body: any, signature: string) {
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+
+    const generatedSignature = crypto
+      .createHmac('sha256', webhookSecret!)
+      .update(JSON.stringify(body))
+      .digest('hex');
+
+    if (generatedSignature !== signature) {
+      throw new NotFoundException('Invalid signature');
+    }
+
+    const event = body.event;
+    const paymentId = body.payload.payment?.entity?.id;
+
+    switch (event) {
+      case 'payment.captured':
+        await this.handleSuccessfulPayment(paymentId);
+        break;
+      case 'payment.failed':
+        await this.handleFailedPayment(paymentId);
+        break;
+      default:
+        return new ForbiddenException(`Unhandled event type: ${event}`);
+    }
+
+    return { status: 'ok' };
+  }
+
+  private async handleSuccessfulPayment(paymentId: string) {
+    const appointment = await this.appointmentModel.findOne({
+      paymemtId: paymentId,
+    });
+
+    if (!appointment) {
+      throw new NotFoundException(
+        `Appointment not found for payment: ${paymentId}`,
+      );
+    }
+
+    appointment.payment = 'paid';
+    appointment.paymemtId = paymentId;
+    await appointment.save();
+    return `Appointment ${appointment._id} marked as paid`;
+  }
+
+  private async handleFailedPayment(paymentId: string) {
+    const appointment = await this.appointmentModel.findOne({
+      paymemtId: paymentId,
+    });
+
+    if (!appointment) {
+      throw new NotFoundException(
+        `Appointment not found for payment: ${paymentId}`,
+      );
+    }
+
+    appointment.payment = 'failed';
+    appointment.paymemtId = paymentId;
+    await appointment.save();
+
+    return `Appointment ${appointment._id} marked as failed`;
   }
 }
