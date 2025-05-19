@@ -50,7 +50,6 @@ export class LoginListener {
   private getClientIp(request?: Request): string {
     if (!request) return 'unknown';
 
-    // Handle x-forwarded-for (can be string or array)
     const xForwardedFor = request.headers['x-forwarded-for'];
     if (xForwardedFor) {
       return Array.isArray(xForwardedFor)

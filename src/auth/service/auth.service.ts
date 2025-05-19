@@ -48,6 +48,10 @@ export class AuthService {
     return { message: 'Account has been unlocked successfully' };
   }
 
+  async event(loginDto: LoginDto) {
+    this.eventEmitter.emit('user.login', loginDto);
+  }
+
   async login(
     email: string,
     password: string,
@@ -110,7 +114,7 @@ export class AuthService {
       request,
     };
 
-    this.eventEmitter.emit('user.login', loginDto);
+    this.event(loginDto);
 
     return { accessToken };
   }
