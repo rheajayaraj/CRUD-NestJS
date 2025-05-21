@@ -37,20 +37,22 @@ export class AppointmentsService {
       );
     }
     const now = new Date();
-    if (!slot.from || slot.from < now) {
+    const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+    if (!slot.from || slot.from < localNow) {
       throw new ForbiddenException('Slot timings are in the past');
     }
-    const order = await this.paymentService.createOrder(500);
+    //const order = await this.paymentService.createOrder(500);
     slot.type = 'booked';
     await slot.save();
     const newAppointment = new this.appointmentModel({
       ...appointment,
       patientId,
-      paymemtId: order.id,
+      // paymemtId: order.id,
       payment: 'pending',
+      status: 'upcoming',
     });
     const savedAppointment = await newAppointment.save();
-    return { appointment: savedAppointment, order };
+    return { appointment: savedAppointment, order: {} };
   }
 
   async findAll(patientId): Promise<Appointment[]> {
@@ -64,5 +66,21 @@ export class AppointmentsService {
       throw new NotFoundException(`Appointmets not found`);
     }
     return appointmets;
+  }
+
+  async findAppointmentsBetween(
+    start: Date,
+    end: Date,
+  ): Promise<AppointmentDocument[]> {
+    const allAppointments = await this.appointmentModel
+      .find({ status: 'upcoming' })
+      .populate('slotId')
+      .populate('patientId');
+
+    return allAppointments.filter((appointment) => {
+      const slot = appointment.slotId as any;
+      const from = new Date(slot.from);
+      return from >= start && from <= end;
+    });
   }
 }

@@ -16,6 +16,10 @@ import { PaymentModule } from './payment/module/payment.module';
 import { RedisModule } from './redis/redis.module';
 import { LoginHistoryModule } from './login-history/module/login-history.module';
 import { UtilsModule } from './common/utils/utils.module';
+import { CallModule } from './call/module/call.module';
+import { CallController } from './call/controller/call.controller';
+import { SchedulerModule } from './scheduler/module/scheduler.module';
+import { SchedulerController } from './scheduler/controller/scheduler.controller';
 
 @Module({
   imports: [
@@ -30,8 +34,16 @@ import { UtilsModule } from './common/utils/utils.module';
     RedisModule,
     LoginHistoryModule,
     UtilsModule,
+    CallModule,
+    SchedulerModule,
   ],
-  controllers: [AppController, SlotController, AppointmentsController],
+  controllers: [
+    AppController,
+    SlotController,
+    AppointmentsController,
+    CallController,
+    SchedulerController,
+  ],
   providers: [AppService, SlotsService, AppointmentsService],
 })
 export class AppModule {}

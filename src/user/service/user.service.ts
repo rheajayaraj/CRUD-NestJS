@@ -28,7 +28,8 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(user.password, saltRounds);
     let age: number | undefined = undefined;
     if (user.dob) {
-      const today = new Date();
+      const now = new Date();
+      const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
       const birthDate = new Date(user.dob);
       age = today.getFullYear() - birthDate.getFullYear();
       const m = today.getMonth() - birthDate.getMonth();
@@ -77,7 +78,8 @@ export class UserService {
     }
     let age: number | undefined = undefined;
     if (user.dob) {
-      const today = new Date();
+      const now = new Date();
+      const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
       const birthDate = new Date(user.dob);
       age = today.getFullYear() - birthDate.getFullYear();
       const m = today.getMonth() - birthDate.getMonth();

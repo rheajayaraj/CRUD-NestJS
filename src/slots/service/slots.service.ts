@@ -64,9 +64,10 @@ export class SlotsService {
 
   async findAll(doctorId): Promise<Slot[]> {
     const now = new Date();
+    const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
     const filter: any = {
       type: 'available',
-      from: { $gt: now },
+      from: { $gt: localNow },
     };
     if (doctorId) {
       filter['doctorId'] = doctorId;

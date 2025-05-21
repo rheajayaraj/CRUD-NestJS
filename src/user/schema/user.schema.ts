@@ -20,6 +20,9 @@ export class User {
   email: string;
 
   @Prop()
+  phone: string;
+
+  @Prop()
   password?: string;
 
   @Prop()

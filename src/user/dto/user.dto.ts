@@ -10,6 +10,7 @@ import {
   IsStrongPassword,
   IsMongoId,
   Length,
+  IsPhoneNumber,
 } from 'class-validator';
 import { UserType } from '../schema/user.schema';
 import { Type } from 'class-transformer';
@@ -22,6 +23,9 @@ export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
+
+  @IsPhoneNumber('IN')
+  phone: string;
 
   @IsStrongPassword()
   @IsString()
@@ -49,6 +53,10 @@ export class UpdateUserDto {
   @IsEmail()
   @IsOptional()
   email?: string;
+
+  @IsPhoneNumber('IN')
+  @IsOptional()
+  phone?: string;
 
   @IsString()
   @IsStrongPassword()
