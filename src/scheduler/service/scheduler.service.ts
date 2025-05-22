@@ -3,6 +3,8 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { AppointmentsService } from '../../appointments/service/appointments.service';
 import { CallService } from '../../call/service/call.service';
+import { MailService } from 'src/mail/service/mail.service';
+import { PopulatedAppointment } from 'src/appointments/interface/appointment.interface';
 
 @Injectable()
 export class SchedulerService implements OnModuleInit {
@@ -12,11 +14,12 @@ export class SchedulerService implements OnModuleInit {
     private readonly schedulerRegistry: SchedulerRegistry,
     private readonly appointmentsService: AppointmentsService,
     private readonly callService: CallService,
+    private readonly mailService: MailService,
   ) {}
 
   onModuleInit() {
-    //this.logger.log('Initializing scheduler...');
-    //this.scheduleReminderChecks();
+    // this.logger.log('Initializing scheduler...');
+    // this.scheduleReminderChecks();
   }
 
   private scheduleReminderChecks() {
@@ -42,10 +45,10 @@ export class SchedulerService implements OnModuleInit {
       console.log(reminderTime);
 
       const appointments =
-        await this.appointmentsService.findAppointmentsBetween(
+        (await this.appointmentsService.findAppointmentsBetween(
           reminderTime,
           new Date(reminderTime.getTime() + 5 * 60000),
-        );
+        )) as unknown as PopulatedAppointment[];
 
       this.logger.debug(`Found ${appointments.length} appointments to process`);
       console.log(appointments);
@@ -53,9 +56,33 @@ export class SchedulerService implements OnModuleInit {
       for (const appointment of appointments) {
         if (appointment.status === 'upcoming') {
           this.logger.debug(`Processing appointment ${appointment._id}`);
+          const fullAppointment = await this.appointmentsService.findById(
+            appointment._id.toString(),
+          );
           await this.callService.initiateReminderCall(
             appointment._id!.toString(),
           );
+          fullAppointment!.log.push({
+            event: 'join-call-reminder',
+            userId: appointment.patientId.toString(),
+            userType: 'patient',
+            type: 'call',
+          });
+          await this.mailService.sendMail(
+            appointment.doctorId.email!,
+            'Reminder',
+            'welcome',
+            {
+              name: appointment.doctorId.name,
+              text: `You have an appoinment with ${appointment.patientId.name} at ${appointment.slotId.from} to ${appointment.slotId.to}`,
+            },
+          );
+          fullAppointment!.log.push({
+            event: 'join-call-reminder',
+            userId: appointment.doctorId.toString(),
+            userType: 'doctor',
+            type: 'email',
+          });
         }
       }
     } catch (error) {

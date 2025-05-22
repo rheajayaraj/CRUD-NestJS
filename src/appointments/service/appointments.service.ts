@@ -75,12 +75,17 @@ export class AppointmentsService {
     const allAppointments = await this.appointmentModel
       .find({ status: 'upcoming' })
       .populate('slotId')
-      .populate('patientId');
+      .populate('patientId')
+      .populate('doctorId');
 
     return allAppointments.filter((appointment) => {
       const slot = appointment.slotId as any;
       const from = new Date(slot.from);
       return from >= start && from <= end;
     });
+  }
+
+  async findById(id: string): Promise<AppointmentDocument | null> {
+    return this.appointmentModel.findById(id);
   }
 }

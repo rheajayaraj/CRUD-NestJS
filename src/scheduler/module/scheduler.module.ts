@@ -4,9 +4,15 @@ import { SchedulerService } from '../service/scheduler.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppointmentsModule } from 'src/appointments/module/appointments.module';
 import { CallModule } from 'src/call/module/call.module';
+import { MailModule } from 'src/mail/module/mail.module';
 
 @Module({
-  imports: [ScheduleModule.forRoot(), AppointmentsModule, CallModule],
+  imports: [
+    ScheduleModule.forRoot(),
+    AppointmentsModule,
+    CallModule,
+    MailModule,
+  ],
   controllers: [SchedulerController],
   providers: [SchedulerService],
   exports: [SchedulerService],
