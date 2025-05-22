@@ -20,6 +20,7 @@ import { CallModule } from './call/module/call.module';
 import { CallController } from './call/controller/call.controller';
 import { SchedulerModule } from './scheduler/module/scheduler.module';
 import { SchedulerController } from './scheduler/controller/scheduler.controller';
+import { TwilioModule } from './twilio/module/twilio.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { SchedulerController } from './scheduler/controller/scheduler.controller
     UtilsModule,
     CallModule,
     SchedulerModule,
+    TwilioModule,
   ],
   controllers: [
     AppController,

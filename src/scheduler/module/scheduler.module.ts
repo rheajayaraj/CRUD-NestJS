@@ -5,6 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppointmentsModule } from 'src/appointments/module/appointments.module';
 import { CallModule } from 'src/call/module/call.module';
 import { MailModule } from 'src/mail/module/mail.module';
+import { TwilioModule } from 'src/twilio/module/twilio.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { MailModule } from 'src/mail/module/mail.module';
     AppointmentsModule,
     CallModule,
     MailModule,
+    TwilioModule,
   ],
   controllers: [SchedulerController],
   providers: [SchedulerService],

@@ -155,11 +155,11 @@ export class CallService {
     }
 
     const doctorName = doctor.name;
-    const appointmentTime = slot.from.toLocaleString();
+    const appointmentTime = slot.from.toUTCString();
     const availableSlots = await this.getAvailableSlots(doctor._id.toString());
 
     const slotOptions = availableSlots
-      .map((slot, i) => `Press ${i + 2} for ${slot.from.toLocaleString()}`)
+      .map((slot, i) => `Press ${i + 2} for ${slot.from.toUTCString()}`)
       .join('. ');
 
     return `

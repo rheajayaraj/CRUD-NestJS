@@ -5,6 +5,7 @@ import { AppointmentsService } from '../../appointments/service/appointments.ser
 import { CallService } from '../../call/service/call.service';
 import { MailService } from 'src/mail/service/mail.service';
 import { PopulatedAppointment } from 'src/appointments/interface/appointment.interface';
+import { TwilioService } from 'src/twilio/service/twilio.service';
 
 @Injectable()
 export class SchedulerService implements OnModuleInit {
@@ -15,15 +16,16 @@ export class SchedulerService implements OnModuleInit {
     private readonly appointmentsService: AppointmentsService,
     private readonly callService: CallService,
     private readonly mailService: MailService,
+    private readonly twilioService: TwilioService,
   ) {}
 
   onModuleInit() {
-    // this.logger.log('Initializing scheduler...');
-    // this.scheduleReminderChecks();
+    //this.logger.log('Initializing scheduler...');
+    //this.scheduleReminderChecks();
   }
 
   private scheduleReminderChecks() {
-    const job = new CronJob('*/1 * * * *', async () => {
+    const job = new CronJob('*/5 * * * *', async () => {
       this.logger.debug('Cron job running!');
       await this.checkUpcomingAppointments();
     });
@@ -51,7 +53,6 @@ export class SchedulerService implements OnModuleInit {
         )) as unknown as PopulatedAppointment[];
 
       this.logger.debug(`Found ${appointments.length} appointments to process`);
-      console.log(appointments);
 
       for (const appointment of appointments) {
         if (appointment.status === 'upcoming') {
@@ -68,13 +69,23 @@ export class SchedulerService implements OnModuleInit {
             userType: 'patient',
             type: 'call',
           });
+          await this.twilioService.sendSms(
+            '+91' + appointment.patientId.phone,
+            `Reminder: Your appointment with Dr. ${appointment.doctorId.name} is scheduled from ${appointment.slotId.from!.toUTCString()} to ${appointment.slotId.to!.toUTCString()}.`,
+          );
+          fullAppointment!.log.push({
+            event: 'join-call-reminder',
+            userId: appointment.patientId.toString(),
+            userType: 'patient',
+            type: 'sms',
+          });
           await this.mailService.sendMail(
             appointment.doctorId.email!,
             'Reminder',
             'welcome',
             {
               name: appointment.doctorId.name,
-              text: `You have an appoinment with ${appointment.patientId.name} at ${appointment.slotId.from} to ${appointment.slotId.to}`,
+              text: `You have an appoinment with ${appointment.patientId.name} at ${appointment.slotId.from!.toUTCString()} to ${appointment.slotId.to!.toUTCString()}`,
             },
           );
           fullAppointment!.log.push({
