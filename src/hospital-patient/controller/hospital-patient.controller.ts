@@ -20,15 +20,27 @@ export class HospitalPatientController {
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: memoryStorage(), // Don't save to disk
+      storage: memoryStorage(),
     }),
   )
   async uploadCSV(@UploadedFile() file: Express.Multer.File) {
     const patients = await this.parseCSV(file.buffer);
-    const result = await this.hospitalPatientsService.insertMany(patients);
+
+    let insertedCount = 0;
+
+    for (const patient of patients) {
+      const exists = await this.hospitalPatientsService.findByEmail(
+        patient.email,
+      );
+      if (!exists) {
+        await this.hospitalPatientsService.create(patient);
+        insertedCount++;
+      }
+    }
+
     return {
-      message: 'CSV uploaded successfully',
-      insertedCount: result.length,
+      message: 'CSV processed',
+      insertedCount,
     };
   }
 

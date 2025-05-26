@@ -13,7 +13,12 @@ export class HospitalPatientService {
     private hospitalPatientModel: Model<HospitalPatientDocument>,
   ) {}
 
-  async insertMany(data: any[]) {
-    return await this.hospitalPatientModel.insertMany(data);
+  async findByEmail(email: string): Promise<HospitalPatient | null> {
+    return this.hospitalPatientModel.findOne({ email });
+  }
+
+  async create(patientData: any): Promise<HospitalPatient> {
+    const createdPatient = new this.hospitalPatientModel(patientData);
+    return createdPatient.save();
   }
 }
