@@ -11,6 +11,9 @@ export class HospitalPatient {
   @Prop({ required: true })
   lastName: string;
 
+  @Prop({ required: true, unique: true })
+  identifier: string;
+
   @Prop({ required: true })
   age: number;
 
@@ -20,7 +23,7 @@ export class HospitalPatient {
   @Prop({ required: true })
   phone: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   email: string;
 
   @Prop()

@@ -6,12 +6,16 @@ import {
   HospitalPatient,
   HospitalPatientSchema,
 } from '../schema/hospital-patient.schema';
+import { RedisModule } from 'src/redis/redis.module';
+import { MailModule } from 'src/mail/module/mail.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: HospitalPatient.name, schema: HospitalPatientSchema },
     ]),
+    RedisModule,
+    MailModule,
   ],
   providers: [HospitalPatientService],
   controllers: [HospitalPatientController],

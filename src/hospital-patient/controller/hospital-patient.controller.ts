@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Post,
   UploadedFile,
@@ -10,6 +11,7 @@ import * as csv from 'csv-parser';
 import { memoryStorage } from 'multer';
 import { Readable } from 'stream';
 import { Express } from 'express';
+import { identifierDTO } from '../dto/hospital-patient.dto';
 
 @Controller('hospital-patients')
 export class HospitalPatientController {
@@ -29,8 +31,8 @@ export class HospitalPatientController {
     let insertedCount = 0;
 
     for (const patient of patients) {
-      const exists = await this.hospitalPatientsService.findByEmail(
-        patient.email,
+      const exists = await this.hospitalPatientsService.findByIdentifier(
+        patient.identifier,
       );
       if (!exists) {
         await this.hospitalPatientsService.create(patient);
@@ -42,6 +44,11 @@ export class HospitalPatientController {
       message: 'CSV processed',
       insertedCount,
     };
+  }
+
+  @Post('otp')
+  async sendOtp(@Body() identifier: identifierDTO) {
+    return this.hospitalPatientsService.sendOtp(identifier.identifier);
   }
 
   private parseCSV(buffer: Buffer): Promise<any[]> {
