@@ -47,6 +47,9 @@ export class HospitalPatientService {
     if (!patient) {
       return new NotFoundException(`Patient with ${identifier} not found`);
     }
+    if (patient.isRegistered) {
+      throw new ForbiddenException('Patient is already registered');
+    }
     const otpKey = `otp:${identifier}`;
     const recentOtpBlockKey = `otp_block:${identifier}`;
 
@@ -110,12 +113,16 @@ export class HospitalPatientService {
           `Patient not found for identifier ${payload.identifier}`,
         );
       }
+      if (patient.isRegistered) {
+        throw new ForbiddenException('Patient is already registered');
+      }
       patient.firstName = registerData.firstName;
       patient.lastName = registerData.lastName;
       patient.age = registerData.age;
       patient.gender = registerData.gender;
       patient.phone = registerData.phone;
       patient.address = registerData.address;
+      patient.isRegistered = true;
       return await patient.save();
     } catch (err) {
       throw new UnauthorizedException('Invalid or expired token');

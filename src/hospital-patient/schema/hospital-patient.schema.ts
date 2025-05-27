@@ -28,6 +28,9 @@ export class HospitalPatient {
 
   @Prop()
   address: string;
+
+  @Prop({ default: false })
+  isRegistered: boolean;
 }
 
 export const HospitalPatientSchema =
