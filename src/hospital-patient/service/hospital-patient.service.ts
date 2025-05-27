@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
@@ -14,7 +15,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import * as crypto from 'crypto';
 import { MailService } from 'src/mail/service/mail.service';
-import { identifierDTO, otpDto } from '../dto/hospital-patient.dto';
+import { otpDto } from '../dto/hospital-patient.dto';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -30,7 +31,9 @@ export class HospitalPatientService {
     private jwtService: JwtService,
   ) {}
 
-  async findByIdentifier(identifier: string): Promise<HospitalPatient | null> {
+  async findByIdentifier(
+    identifier: string,
+  ): Promise<HospitalPatientDocument | null> {
     return this.hospitalPatientModel.findOne({ identifier });
   }
 
@@ -92,5 +95,30 @@ export class HospitalPatientService {
     const payload = { identifier: patient.identifier, email: patient.email };
     const jwtToken = this.jwtService.sign(payload);
     return { jwtToken };
+  }
+
+  async register(
+    registerData: any,
+    token: string,
+  ): Promise<HospitalPatient | null> {
+    try {
+      const cleanedToken = token.replace('Bearer ', '');
+      const payload = this.jwtService.verify(cleanedToken);
+      const patient = await this.findByIdentifier(payload.identifier);
+      if (!patient) {
+        throw new NotFoundException(
+          `Patient not found for identifier ${payload.identifier}`,
+        );
+      }
+      patient.firstName = registerData.firstName;
+      patient.lastName = registerData.lastName;
+      patient.age = registerData.age;
+      patient.gender = registerData.gender;
+      patient.phone = registerData.phone;
+      patient.address = registerData.address;
+      return await patient.save();
+    } catch (err) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
   }
 }

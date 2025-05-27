@@ -1,4 +1,10 @@
-import { IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsIn,
+  IsNumber,
+  IsPhoneNumber,
+  IsString,
+} from 'class-validator';
 
 export class identifierDTO {
   @IsString()
@@ -11,4 +17,27 @@ export class otpDto {
 
   @IsString()
   otp: string;
+}
+
+export class registerDto {
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+
+  @IsNumber()
+  age: number;
+
+  @IsIn(['Male', 'Female'], { message: 'Gender must be either Male or Female' })
+  gender: string;
+
+  @IsPhoneNumber('IN')
+  phone: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  address: string;
 }

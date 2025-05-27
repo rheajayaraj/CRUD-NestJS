@@ -4,6 +4,7 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
+  Headers,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { HospitalPatientService } from '../service/hospital-patient.service';
@@ -11,7 +12,11 @@ import * as csv from 'csv-parser';
 import { memoryStorage } from 'multer';
 import { Readable } from 'stream';
 import { Express } from 'express';
-import { identifierDTO, otpDto } from '../dto/hospital-patient.dto';
+import {
+  identifierDTO,
+  otpDto,
+  registerDto,
+} from '../dto/hospital-patient.dto';
 
 @Controller('hospital-patients')
 export class HospitalPatientController {
@@ -54,6 +59,14 @@ export class HospitalPatientController {
   @Post('verify')
   async verifyOtp(@Body() otpData: otpDto) {
     return this.hospitalPatientsService.verifyOtp(otpData);
+  }
+
+  @Post('register')
+  async register(
+    @Body() registerData: registerDto,
+    @Headers('authorization') token: string,
+  ) {
+    return this.hospitalPatientsService.register(registerData, token);
   }
 
   private parseCSV(buffer: Buffer): Promise<any[]> {
