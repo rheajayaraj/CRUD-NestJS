@@ -11,7 +11,7 @@ import * as csv from 'csv-parser';
 import { memoryStorage } from 'multer';
 import { Readable } from 'stream';
 import { Express } from 'express';
-import { identifierDTO } from '../dto/hospital-patient.dto';
+import { identifierDTO, otpDto } from '../dto/hospital-patient.dto';
 
 @Controller('hospital-patients')
 export class HospitalPatientController {
@@ -49,6 +49,11 @@ export class HospitalPatientController {
   @Post('otp')
   async sendOtp(@Body() identifier: identifierDTO) {
     return this.hospitalPatientsService.sendOtp(identifier.identifier);
+  }
+
+  @Post('verify')
+  async verifyOtp(@Body() otpData: otpDto) {
+    return this.hospitalPatientsService.verifyOtp(otpData);
   }
 
   private parseCSV(buffer: Buffer): Promise<any[]> {

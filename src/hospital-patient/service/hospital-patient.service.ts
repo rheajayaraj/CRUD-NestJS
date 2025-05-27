@@ -14,7 +14,8 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import * as crypto from 'crypto';
 import { MailService } from 'src/mail/service/mail.service';
-import { identifierDTO } from '../dto/hospital-patient.dto';
+import { identifierDTO, otpDto } from '../dto/hospital-patient.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class HospitalPatientService {
@@ -26,6 +27,7 @@ export class HospitalPatientService {
     private hospitalPatientModel: Model<HospitalPatientDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly mailService: MailService,
+    private jwtService: JwtService,
   ) {}
 
   async findByIdentifier(identifier: string): Promise<HospitalPatient | null> {
@@ -68,5 +70,27 @@ export class HospitalPatientService {
     );
 
     return { message: 'OTP sent to email' };
+  }
+
+  async verifyOtp(otpData: otpDto) {
+    const patient = await this.findByIdentifier(otpData.identifier);
+    if (!patient) {
+      return new NotFoundException(
+        `Patient with ${otpData.identifier} not found`,
+      );
+    }
+    const otpKey = `otp:${otpData.identifier}`;
+    const storedOtp = await this.cacheManager.get<string>(otpKey);
+    if (!storedOtp) {
+      throw new ForbiddenException(
+        'OTP has expired. Please request a new one.',
+      );
+    }
+    if (otpData.otp !== storedOtp) {
+      throw new ForbiddenException('OTP is not valid');
+    }
+    const payload = { identifier: patient.identifier, email: patient.email };
+    const jwtToken = this.jwtService.sign(payload);
+    return { jwtToken };
   }
 }

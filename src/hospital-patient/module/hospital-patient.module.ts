@@ -8,6 +8,7 @@ import {
 } from '../schema/hospital-patient.schema';
 import { RedisModule } from 'src/redis/redis.module';
 import { MailModule } from 'src/mail/module/mail.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -16,6 +17,10 @@ import { MailModule } from 'src/mail/module/mail.module';
     ]),
     RedisModule,
     MailModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET_KEY!,
+      signOptions: { expiresIn: '24h' },
+    }),
   ],
   providers: [HospitalPatientService],
   controllers: [HospitalPatientController],

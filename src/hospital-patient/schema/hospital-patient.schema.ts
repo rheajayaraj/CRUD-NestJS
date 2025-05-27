@@ -5,22 +5,22 @@ export type HospitalPatientDocument = HospitalPatient & Document;
 
 @Schema()
 export class HospitalPatient {
-  @Prop({ required: true })
+  @Prop()
   firstName: string;
 
-  @Prop({ required: true })
+  @Prop()
   lastName: string;
 
   @Prop({ required: true, unique: true })
   identifier: string;
 
-  @Prop({ required: true })
+  @Prop()
   age: number;
 
-  @Prop({ required: true })
+  @Prop()
   gender: string;
 
-  @Prop({ required: true })
+  @Prop()
   phone: string;
 
   @Prop({ required: true })
