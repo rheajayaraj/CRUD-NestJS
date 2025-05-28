@@ -69,6 +69,16 @@ export class HospitalPatientController {
     return this.hospitalPatientsService.register(registerData, token);
   }
 
+  @Post('phone-otp')
+  async sendPhoneOtp(@Body() identifier: identifierDTO) {
+    return this.hospitalPatientsService.sendPhoneOtp(identifier.identifier);
+  }
+
+  @Post('phone-verify')
+  async verifyPhoneOtp(@Body() otpData: otpDto) {
+    return this.hospitalPatientsService.verifyPhoneOtp(otpData);
+  }
+
   private parseCSV(buffer: Buffer): Promise<any[]> {
     return new Promise((resolve, reject) => {
       const results: any[] = [];

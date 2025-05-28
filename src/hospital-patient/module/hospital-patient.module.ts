@@ -9,6 +9,7 @@ import {
 import { RedisModule } from 'src/redis/redis.module';
 import { MailModule } from 'src/mail/module/mail.module';
 import { JwtModule } from '@nestjs/jwt';
+import { TwilioModule } from 'src/twilio/module/twilio.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { JwtModule } from '@nestjs/jwt';
       secret: process.env.JWT_SECRET_KEY!,
       signOptions: { expiresIn: '24h' },
     }),
+    TwilioModule,
   ],
   providers: [HospitalPatientService],
   controllers: [HospitalPatientController],

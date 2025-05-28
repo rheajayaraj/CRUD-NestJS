@@ -31,6 +31,12 @@ export class HospitalPatient {
 
   @Prop({ default: false })
   isRegistered: boolean;
+
+  @Prop({ default: false })
+  isEmailVerified: boolean;
+
+  @Prop({ default: false })
+  isPhoneVerified: boolean;
 }
 
 export const HospitalPatientSchema =
