@@ -5,6 +5,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Headers,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { HospitalPatientService } from '../service/hospital-patient.service';
@@ -17,6 +18,7 @@ import {
   otpDto,
   registerDto,
 } from '../dto/hospital-patient.dto';
+import { extname } from 'path';
 
 @Controller('hospital-patients')
 export class HospitalPatientController {
@@ -31,6 +33,18 @@ export class HospitalPatientController {
     }),
   )
   async uploadCSV(@UploadedFile() file: Express.Multer.File) {
+    const fileExt = extname(file.originalname).toLowerCase();
+
+    if (fileExt !== '.csv') {
+      throw new BadRequestException('Only .csv files are allowed.');
+    }
+
+    const text = file.buffer.toString('utf-8');
+    const [headerLine] = text.split('\n');
+    if (!headerLine.includes('identifier') || !headerLine.includes('email')) {
+      throw new BadRequestException('Invalid CSV format');
+    }
+
     const patients = await this.parseCSV(file.buffer);
 
     let insertedCount = 0;
