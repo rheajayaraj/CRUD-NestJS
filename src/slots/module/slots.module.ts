@@ -6,6 +6,7 @@ import { Slot, SlotSchema } from '../schema/slots.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { UserGuard } from 'src/common/utils/user.guard';
+import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
   controllers: [SlotController],
@@ -17,6 +18,7 @@ import { UserGuard } from 'src/common/utils/user.guard';
       secret: process.env.JWT_SECRET_KEY!,
       signOptions: { expiresIn: '24h' },
     }),
+    RedisModule,
   ],
   exports: [SlotsService, MongooseModule],
 })

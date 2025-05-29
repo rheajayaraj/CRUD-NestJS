@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../schema/user.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
+import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
   controllers: [DoctorController, PatientController],
@@ -17,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
       secret: process.env.JWT_SECRET_KEY!,
       signOptions: { expiresIn: '24h' },
     }),
+    RedisModule,
   ],
   exports: [UserService, MongooseModule, JwtModule],
 })
