@@ -12,6 +12,7 @@ import { CreateAppointmentDto } from '../dto/appointment.dto';
 import { Request } from 'express';
 import { PatientGuard } from 'src/common/utils/patient.guard';
 import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
+import { UserGuard } from 'src/common/utils/user.guard';
 
 @Controller('appointment')
 export class AppointmentsController {
@@ -32,5 +33,21 @@ export class AppointmentsController {
     const user = req.user as JwtPayload;
     if (!user?.userId) throw new BadRequestException('Unauthorized access');
     return this.appointmentService.findAll(user.userId);
+  }
+
+  @Get('today-appointments')
+  @UseGuards(UserGuard)
+  async findToday(@Req() req: Request) {
+    const user = req.user as JwtPayload;
+    if (!user?.userId) throw new BadRequestException('Unauthorized access');
+    return this.appointmentService.findTodayAppointments(user.userId);
+  }
+
+  @Get('future-appointments')
+  @UseGuards(UserGuard)
+  async findFuture(@Req() req: Request) {
+    const user = req.user as JwtPayload;
+    if (!user?.userId) throw new BadRequestException('Unauthorized access');
+    return this.appointmentService.findFutureAppointments(user.userId);
   }
 }

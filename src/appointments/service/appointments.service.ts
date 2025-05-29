@@ -88,4 +88,47 @@ export class AppointmentsService {
   async findById(id: string): Promise<AppointmentDocument | null> {
     return this.appointmentModel.findById(id);
   }
+
+  async findTodayAppointments(doctorId: string): Promise<Appointment[]> {
+    const now = new Date();
+    const startOfToday = new Date(now.setHours(0, 0, 0, 0));
+    const endOfToday = new Date(now.setHours(23, 59, 59, 999));
+
+    const appointments = await this.appointmentModel
+      .find({ doctorId, status: 'upcoming' })
+      .populate('patientId', '-password')
+      .populate('slotId')
+      .exec();
+
+    if (!appointments || appointments.length === 0) {
+      throw new NotFoundException(`Appointments not found`);
+    }
+
+    return appointments.filter((appointment) => {
+      const slot = appointment.slotId as any;
+      const from = new Date(slot.from);
+      return from >= startOfToday && from <= endOfToday;
+    });
+  }
+
+  async findFutureAppointments(doctorId: string): Promise<Appointment[]> {
+    const now = new Date();
+    const startOfTomorrow = new Date(now.setHours(24, 0, 0, 0));
+
+    const appointments = await this.appointmentModel
+      .find({ doctorId, status: 'upcoming' })
+      .populate('patientId', '-password')
+      .populate('slotId')
+      .exec();
+
+    if (!appointments || appointments.length === 0) {
+      throw new NotFoundException(`Appointments not found`);
+    }
+
+    return appointments.filter((appointment) => {
+      const slot = appointment.slotId as any;
+      const from = new Date(slot.from);
+      return from >= startOfTomorrow;
+    });
+  }
 }
