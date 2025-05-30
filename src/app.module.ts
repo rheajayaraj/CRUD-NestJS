@@ -22,6 +22,9 @@ import { SchedulerModule } from './scheduler/module/scheduler.module';
 import { SchedulerController } from './scheduler/controller/scheduler.controller';
 import { TwilioModule } from './twilio/module/twilio.module';
 import { HospitalPatientModule } from './hospital-patient/module/hospital-patient.module';
+import { FileService } from './file/service/file.service';
+import { UploadController } from './file/controller/file.controller';
+import { FileModule } from './file/module/file.module';
 
 @Module({
   imports: [
@@ -40,6 +43,7 @@ import { HospitalPatientModule } from './hospital-patient/module/hospital-patien
     SchedulerModule,
     TwilioModule,
     HospitalPatientModule,
+    FileModule,
   ],
   controllers: [
     AppController,
@@ -48,6 +52,6 @@ import { HospitalPatientModule } from './hospital-patient/module/hospital-patien
     CallController,
     SchedulerController,
   ],
-  providers: [AppService, SlotsService, AppointmentsService],
+  providers: [AppService, SlotsService, AppointmentsService, FileService],
 })
 export class AppModule {}
