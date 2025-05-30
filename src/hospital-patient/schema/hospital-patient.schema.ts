@@ -37,6 +37,9 @@ export class HospitalPatient {
 
   @Prop({ default: false })
   isPhoneVerified: boolean;
+
+  @Prop()
+  photo: string;
 }
 
 export const HospitalPatientSchema =

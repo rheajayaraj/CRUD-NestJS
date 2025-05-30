@@ -130,6 +130,9 @@ export class HospitalPatientService {
       patient.phone = registerData.phone;
       patient.address = registerData.address;
       patient.isRegistered = true;
+      if (registerData.photo) {
+        patient.photo = registerData.photo;
+      }
       return await patient.save();
     } catch (err) {
       throw new UnauthorizedException('Invalid or expired token');

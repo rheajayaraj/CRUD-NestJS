@@ -6,6 +6,7 @@ import {
   UseInterceptors,
   Headers,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { HospitalPatientService } from '../service/hospital-patient.service';
@@ -18,7 +19,10 @@ import {
   otpDto,
   registerDto,
 } from '../dto/hospital-patient.dto';
-import { extname } from 'path';
+import * as fileType from 'file-type';
+import { promises as fs } from 'fs';
+import * as path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('hospital-patients')
 export class HospitalPatientController {
@@ -33,7 +37,7 @@ export class HospitalPatientController {
     }),
   )
   async uploadCSV(@UploadedFile() file: Express.Multer.File) {
-    const fileExt = extname(file.originalname).toLowerCase();
+    const fileExt = path.extname(file.originalname).toLowerCase();
 
     if (fileExt !== '.csv') {
       throw new BadRequestException('Only .csv files are allowed.');
@@ -76,10 +80,37 @@ export class HospitalPatientController {
   }
 
   @Post('register')
+  @UseInterceptors(
+    FileInterceptor('photo', {
+      storage: memoryStorage(),
+    }),
+  )
   async register(
+    @UploadedFile() file: Express.Multer.File,
     @Body() registerData: registerDto,
     @Headers('authorization') token: string,
   ) {
+    if (!file || !file.buffer) {
+      throw new Error('File is missing or not sent correctly');
+    }
+
+    const type = await fileType.fromBuffer(file.buffer);
+
+    if (!type || !['image/jpeg', 'image/png'].includes(type.mime)) {
+      throw new ForbiddenException(
+        'Invalid file type. Only JPEG and PNG are allowed.',
+      );
+    }
+
+    const extension = type.ext;
+    const filename = `${uuidv4()}.${extension}`;
+    const savePath = path.resolve(process.cwd(), 'uploads', 'photos', filename);
+
+    await fs.mkdir(path.dirname(savePath), { recursive: true });
+    await fs.writeFile(savePath, file.buffer);
+
+    registerData.photo = filename;
+
     return this.hospitalPatientsService.register(registerData, token);
   }
 

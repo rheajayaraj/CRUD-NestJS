@@ -2,6 +2,7 @@ import {
   IsEmail,
   IsIn,
   IsNumber,
+  IsOptional,
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
@@ -26,8 +27,8 @@ export class registerDto {
   @IsString()
   lastName: string;
 
-  @IsNumber()
-  age: number;
+  // @IsNumber()
+  // age: number;
 
   @IsIn(['Male', 'Female'], { message: 'Gender must be either Male or Female' })
   gender: string;
@@ -36,8 +37,12 @@ export class registerDto {
   phone: string;
 
   @IsEmail()
+  @IsOptional()
   email: string;
 
   @IsString()
   address: string;
+
+  @IsOptional()
+  photo?: string;
 }
