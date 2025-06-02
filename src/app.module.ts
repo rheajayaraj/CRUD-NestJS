@@ -25,6 +25,7 @@ import { HospitalPatientModule } from './hospital-patient/module/hospital-patien
 import { FileService } from './file/service/file.service';
 import { UploadController } from './file/controller/file.controller';
 import { FileModule } from './file/module/file.module';
+import { AdminModule } from './admin/module/admin.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { FileModule } from './file/module/file.module';
     TwilioModule,
     HospitalPatientModule,
     FileModule,
+    AdminModule,
   ],
   controllers: [
     AppController,
