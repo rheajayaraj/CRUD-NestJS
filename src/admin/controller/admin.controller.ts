@@ -56,4 +56,9 @@ export class AdminController {
   async createSlots(@Body() slot: CreateSlotDto) {
     return this.adminService.createMultipleSlots(slot);
   }
+
+  @Get('slots')
+  async slots() {
+    return this.adminService.slots();
+  }
 }

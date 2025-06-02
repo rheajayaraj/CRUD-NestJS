@@ -132,4 +132,12 @@ export class AdminService {
 
     return this.slotModel.insertMany(slots);
   }
+
+  async slots() {
+    const slots = await this.slotModel.find().exec();
+    if (!slots || slots.length == 0) {
+      throw new NotFoundException('Slots not found');
+    }
+    return slots;
+  }
 }
