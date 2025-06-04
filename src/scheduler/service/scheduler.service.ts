@@ -22,6 +22,8 @@ export class SchedulerService implements OnModuleInit {
   onModuleInit() {
     //this.logger.log('Initializing scheduler...');
     //this.scheduleReminderChecks();
+    this.scheduleMailReminderChecks('30min');
+    this.scheduleMailReminderChecks('1day');
   }
 
   private scheduleReminderChecks() {
@@ -33,6 +35,18 @@ export class SchedulerService implements OnModuleInit {
     this.schedulerRegistry.addCronJob('appointmentReminders', job);
     job.start();
     this.logger.log('Appointment reminder scheduler started');
+  }
+
+  private scheduleMailReminderChecks(mode: '30min' | '1day') {
+    const jobName = `appointmentReminders-${mode}`;
+    const job = new CronJob('*/5 * * * *', async () => {
+      this.logger.debug(`Cron job running: ${jobName}`);
+      await this.checkUpcomingAppointmentsMail(mode);
+    });
+
+    this.schedulerRegistry.addCronJob(jobName, job);
+    job.start();
+    this.logger.log(`${jobName} scheduler started`);
   }
 
   private async checkUpcomingAppointments() {
@@ -98,6 +112,61 @@ export class SchedulerService implements OnModuleInit {
       }
     } catch (error) {
       this.logger.error('Error in appointment check:', error);
+    }
+  }
+
+  private async checkUpcomingAppointmentsMail(mode: '30min' | '1day') {
+    this.logger.debug(`Checking for upcoming appointments for mode: ${mode}`);
+    try {
+      const now = new Date();
+      const localNow = new Date(
+        now.getTime() - now.getTimezoneOffset() * 60000,
+      );
+      const offsetMinutes = mode === '30min' ? 30 : 24 * 60;
+      const windowMinutes = 5;
+
+      const targetTime = new Date(localNow.getTime() + offsetMinutes * 60000);
+      const endTime = new Date(targetTime.getTime() + windowMinutes * 60000);
+      console.log(targetTime);
+
+      const appointments =
+        (await this.appointmentsService.findAppointmentsBetween(
+          targetTime,
+          endTime,
+        )) as unknown as PopulatedAppointment[];
+
+      this.logger.debug(
+        `Found ${appointments.length} appointments for ${mode}`,
+      );
+
+      for (const appointment of appointments) {
+        if (appointment.status !== 'upcoming') continue;
+
+        const fullAppointment = await this.appointmentsService.findById(
+          appointment._id.toString(),
+        );
+
+        await this.mailService.sendMail(
+          appointment.doctorId.email!,
+          `Appointment Reminder - ${mode === '1day' ? '1 day' : '30 minutes'} left`,
+          'welcome',
+          {
+            name: appointment.doctorId.name,
+            text: `You have an appointment with ${appointment.patientId.name} from ${appointment.slotId.from!.toUTCString()} to ${appointment.slotId.to!.toUTCString()}.`,
+          },
+        );
+        await this.mailService.sendMail(
+          appointment.patientId.email!,
+          `Appointment Reminder - ${mode === '1day' ? '1 day' : '30 minutes'} left`,
+          'welcome',
+          {
+            name: appointment.patientId.name,
+            text: `Your appointment with Dr. ${appointment.doctorId.name} is scheduled from ${appointment.slotId.from!.toUTCString()} to ${appointment.slotId.to!.toUTCString()}.`,
+          },
+        );
+      }
+    } catch (error) {
+      this.logger.error(`Error in ${mode} reminder check:`, error);
     }
   }
 }

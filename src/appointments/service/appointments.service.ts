@@ -86,7 +86,11 @@ export class AppointmentsService {
   }
 
   async findById(id: string): Promise<AppointmentDocument | null> {
-    return this.appointmentModel.findById(id);
+    return this.appointmentModel
+      .findById(id)
+      .populate('slotId')
+      .populate('patientId')
+      .populate('doctorId');
   }
 
   async findTodayAppointments(doctorId: string): Promise<Appointment[]> {
