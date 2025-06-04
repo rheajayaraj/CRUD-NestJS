@@ -23,8 +23,10 @@ import * as fileType from 'file-type';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('hospital-patients')
+@ApiTags('Hospital Patients')
 export class HospitalPatientController {
   constructor(
     private readonly hospitalPatientsService: HospitalPatientService,
@@ -36,6 +38,11 @@ export class HospitalPatientController {
       storage: memoryStorage(),
     }),
   )
+  @ApiOperation({ summary: 'Create many users in DB' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Patient registration data in CSV',
+  })
   async uploadCSV(@UploadedFile() file: Express.Multer.File) {
     const fileExt = path.extname(file.originalname).toLowerCase();
 
@@ -70,16 +77,34 @@ export class HospitalPatientController {
   }
 
   @Post('otp')
+  @ApiOperation({ summary: 'Email verification' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Patient identifier data',
+    type: identifierDTO,
+  })
   async sendOtp(@Body() identifier: identifierDTO) {
     return this.hospitalPatientsService.sendOtp(identifier.identifier);
   }
 
   @Post('verify')
+  @ApiOperation({ summary: 'Email verification' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'OTP and identifier',
+    type: otpDto,
+  })
   async verifyOtp(@Body() otpData: otpDto) {
     return this.hospitalPatientsService.verifyOtp(otpData);
   }
 
   @Post('register')
+  @ApiOperation({ summary: 'Register a new patient' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Patient registration data',
+    type: registerDto,
+  })
   @UseInterceptors(
     FileInterceptor('photo', {
       storage: memoryStorage(),
@@ -115,11 +140,23 @@ export class HospitalPatientController {
   }
 
   @Post('phone-otp')
+  @ApiOperation({ summary: 'Mobile verification' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Patient identifier data',
+    type: identifierDTO,
+  })
   async sendPhoneOtp(@Body() identifier: identifierDTO) {
     return this.hospitalPatientsService.sendPhoneOtp(identifier.identifier);
   }
 
   @Post('phone-verify')
+  @ApiOperation({ summary: 'Mobile verification' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'OTP and identifier',
+    type: otpDto,
+  })
   async verifyPhoneOtp(@Body() otpData: otpDto) {
     return this.hospitalPatientsService.verifyPhoneOtp(otpData);
   }

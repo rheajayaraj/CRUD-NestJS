@@ -11,8 +11,10 @@ import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 import * as fileType from 'file-type';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('file')
+@ApiTags('Files')
 export class UploadController {
   @Post('upload')
   @UseInterceptors(
@@ -20,6 +22,11 @@ export class UploadController {
       storage: memoryStorage(),
     }),
   )
+  @ApiOperation({ summary: 'File validation' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Any file',
+  })
   async upload(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
