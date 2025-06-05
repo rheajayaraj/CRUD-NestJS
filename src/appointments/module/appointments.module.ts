@@ -9,10 +9,11 @@ import { Appointment, AppointmentSchema } from '../schema/appointmets.schema';
 import { SlotModule } from 'src/slots/module/slots.module';
 import { PaymentService } from 'src/payment/service/payment.service';
 import { RedisModule } from 'src/redis/redis.module';
+import { SocketGateway } from 'src/common/utils/socket.gateway';
 
 @Module({
   controllers: [AppointmentsController],
-  providers: [AppointmentsService, UserGuard, PaymentService],
+  providers: [AppointmentsService, UserGuard, PaymentService, SocketGateway],
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forFeature([

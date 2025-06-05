@@ -26,6 +26,7 @@ import { FileService } from './file/service/file.service';
 import { UploadController } from './file/controller/file.controller';
 import { FileModule } from './file/module/file.module';
 import { AdminModule } from './admin/module/admin.module';
+import { SocketGateway } from './common/utils/socket.gateway';
 
 @Module({
   imports: [
@@ -54,6 +55,13 @@ import { AdminModule } from './admin/module/admin.module';
     CallController,
     SchedulerController,
   ],
-  providers: [AppService, SlotsService, AppointmentsService, FileService],
+  providers: [
+    AppService,
+    SlotsService,
+    AppointmentsService,
+    FileService,
+    SocketGateway,
+  ],
+  exports: [SocketGateway],
 })
 export class AppModule {}

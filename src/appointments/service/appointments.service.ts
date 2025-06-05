@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 import { CreateAppointmentDto } from '../dto/appointment.dto';
 import { Slot } from '../../slots/schema/slots.schema';
 import { PaymentService } from 'src/payment/service/payment.service';
+import { SocketGateway } from '../../common/utils/socket.gateway';
 
 @Injectable()
 export class AppointmentsService {
@@ -18,6 +19,7 @@ export class AppointmentsService {
     @InjectModel(Slot.name)
     private slotModel: Model<Slot>,
     private paymentService: PaymentService,
+    private readonly socketGateway: SocketGateway,
   ) {}
 
   async create(
@@ -52,6 +54,10 @@ export class AppointmentsService {
       status: 'upcoming',
     });
     const savedAppointment = await newAppointment.save();
+    this.socketGateway.notifyDoctor(appointment.doctorId, {
+      message: `New appointment.`,
+      appointment,
+    });
     return { appointment: savedAppointment, order: {} };
   }
 
